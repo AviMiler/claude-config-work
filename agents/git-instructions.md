@@ -8,7 +8,7 @@ Always commit directly to `main`. Do not create feature branches, develop branch
 
 1. Before committing, pull latest from remote: `git pull origin main`
 2. Stage only the files that were changed (never `git add -A`)
-3. Commit with a conventional commit message derived from the builder's SUMMARY
+3. Commit with a conventional commit message derived from what Stage 2 (Build) changed
 4. Push to `main`: `git push origin main`
 
 ## Rules

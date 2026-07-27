@@ -1,49 +1,46 @@
-# Agent Orchestration Framework
+# Agents
 
 ## Overview
 
-This framework coordinates specialized Claude Code agents in a sequential pipeline to automate development workflows. Each agent has a single responsibility and communicates through a standardized protocol.
+This folder holds standalone Claude Code subagent definitions. There is no
+orchestrator and no registry — agents here are invoked directly by name via
+the `Agent` tool, from whichever skill or conversation needs them.
 
-## Pipeline
+## Agents
 
-```
-spec-validator → builder → doc-agent → [git operations]
-```
-
-1. **spec-validator** — Validates the task against the project specification before any code is written
-2. **builder** — Implements the code changes based on the validated spec
-3. **doc-agent** — Updates project documentation (AGENT_CONTEXT, PROJECT_MAP, CHANGELOG, ARCHITECTURE)
-4. **git-agent** — Commits and pushes changes per the project's `git-instructions.md`
+- **verify-agent** — Stage 3 (Verify) of the `enforcing-coding-workflow`
+  skill. Invoked directly by that skill after Stage 2 (Build), before
+  Stage 4 (Document). Judges Go/No-Go on a change: scopes what verification
+  is warranted, runs targeted tests when applicable, checks for spec
+  regressions, and asks before anything expensive or risky.
 
 ## Structured Response Protocol
 
-Every agent MUST return responses in this format:
+Agents in this folder return responses in this format:
 
 ```
 STATUS: OK | ERROR | INCOMPLETE
 AGENT: [agent-name]
 SUMMARY: [what was done]
 DETAILS: [relevant output]
-NEXT_ACTION: [what the orchestrator should do next]
+NEXT_ACTION: [what the caller should do next]
 ```
 
 ### STATUS values
 
-- **OK** — Completed successfully, proceed to next stage
-- **ERROR** — Failed, pipeline should stop for developer input
-- **INCOMPLETE** — Partially done, developer should decide how to proceed
+- **OK** — Completed successfully, caller proceeds to the next stage
+- **ERROR** — Failed, caller should stop and get developer input
+- **INCOMPLETE** — Blocked on something that needs developer approval first
 
 ## Adding a New Agent
 
-1. Create a `.md` file in `agents/` with frontmatter (name, description, model, color)
-2. Implement the structured response protocol in the agent's system prompt
-3. Register the agent in `agents/registry.md` with order, name, path, and purpose
-4. If inserting mid-pipeline, update `agents/orchestrator-controller.md` sequence
+1. Create a `.md` file in `agents/` with frontmatter (name, description,
+   model, color, tools).
+2. Implement the structured response protocol in the agent's system prompt.
+3. Reference it by name from whichever skill or workflow needs it — no
+   registry file to update.
 
 ## Git Instructions
 
-Git operations are configured via `git-instructions.md` at the project root. This file tells the orchestrator how to handle commits and pushes. If the file doesn't exist when the pipeline runs, the orchestrator will ask the developer for instructions and create it.
-
-## Invoking the Orchestrator
-
-Provide a task description to the orchestrator-controller agent. It will read the registry, run agents in sequence, and handle errors with developer input.
+Git operations for this repo follow `git-instructions.md` at the project
+root.
