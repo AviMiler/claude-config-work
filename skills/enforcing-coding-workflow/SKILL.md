@@ -49,6 +49,10 @@ files, reading files "just to see what's there"):
   file. Use it to jump straight to the relevant file(s) instead of scanning.
 - Only fall back to broad exploration when the map doesn't cover what you
   need, or doesn't exist yet.
+- **If what you find on disk contradicts the map** (file moved, renamed,
+  purpose changed, or gone) — stop trusting the map for this task. Fix the
+  stale entry in `PROJECT_MAP.md` immediately, then continue. A stale map
+  is worse than no map — don't let it silently mislead the next task too.
 - This applies to the main agent and to any subagent it briefs — a good
   brief (see Stage 3) is what lets a subagent skip exploration entirely.
 
@@ -161,22 +165,26 @@ part of every coding task (it's expensive).
 
 ### Stage 4 — Document
 
-Update the project's tracking files per `anthropic-skills:agentic-code`'s
-templates:
+Default is **don't touch a file unless its condition below is met.** Two
+files update every task because they're cheap and are the project's memory;
+everything else is conditional — check the condition, and if it isn't met,
+skip the file silently (don't mention it in your output, don't explain why
+you skipped it — that costs the same as writing it).
 
 ```
-[ ] AGENT_CONTEXT.md — "Last Changes", "Current State", "Next Steps"
-[ ] PROJECT_MAP.md   — any files added/removed/renamed
-[ ] CHANGELOG.md     — one line per logical change with date
-[ ] spec.md (or similar) — updated requirements/decisions if changed in Stage 2
-[ ] ARCHITECTURE.md  — if a pattern or decision changed
-[ ] DEPENDENCIES.md  — if a package was added or removed
-[ ] DECISIONS.md     — only if a real choice was made between alternatives (see below)
+[ ] AGENT_CONTEXT.md — always. 1-2 lines under "Last Changes" with what/why.
+[ ] CHANGELOG.md     — always. One line: date + what + why.
+[ ] PROJECT_MAP.md   — only if files were added, removed, or renamed this task.
+[ ] spec.md (or similar) — only if Stage 2 changed a requirement.
+[ ] ARCHITECTURE.md  — only if a structural pattern or design actually changed.
+[ ] DEPENDENCIES.md  — only if a package was added or removed.
+[ ] DECISIONS.md     — only if a real choice was made between alternatives (see below).
 ```
 
-If these files don't exist yet, create them from `anthropic-skills:agentic-code`'s
-templates. If time is short, update `AGENT_CONTEXT.md` and the spec at
-minimum.
+If `AGENT_CONTEXT.md` or `CHANGELOG.md` don't exist yet, create them from
+`anthropic-skills:agentic-code`'s templates (small — a few headings). Don't
+create the conditional files ahead of need; create them the first time
+their condition actually triggers.
 
 **DECISIONS.md — record the "why", not the "what".** Add an entry only when
 this task involved picking one approach over a real alternative (a library
