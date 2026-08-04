@@ -69,22 +69,36 @@ non-code tasks (standalone doc writing, etc.).
 
 ### Stage 1 — Spec-Validate
 
-**The spec is authoritative.** Check the request against it:
+**Delegate to `spec-doc-agent`.** Run this stage via the `Agent` tool with
+`subagent_type: spec-doc-agent` (defined at
+`~/.claude/agents/agents/spec-doc-agent.md`, runs on Sonnet — despite only
+running twice per task, its ambiguity/contradiction judgment here gates the
+rest of the workflow, so accuracy matters more than model cost) — this is
+**Invocation 1** of that agent. Brief it with the task request and the spec
+file path(s) if already known.
 
-- If a spec file exists (spec.md, requirements.md, ARCHITECTURE.md), read it
-  fully before responding. This is mandatory.
-- If no spec file exists, create one (use existing docs like README,
-  AGENT_CONTEXT.md, ARCHITECTURE.md as the de facto spec, then write it down).
-- Confirm the request aligns with the spec. If unclear:
-  - **Ask the user:** "Does this requirement belong in the spec as a permanent
-    requirement, or is it a one-time exception?"
-  - If permanent → update the spec document with the user's confirmation
-  - If exception → proceed with a clear note that this breaks the spec
-  - If conflict → stop and ask how to resolve
+**⚠️ Save the returned agent id/name immediately.** Stage 4 must resume this
+*exact* agent instance (not spawn a fresh one) via `SendMessage`, so it can
+compare what actually got built against what it scoped here, from its own
+memory. Hold onto that id/name across Stage 2 (Build) and Stage 3 (Verify) —
+losing it breaks the Stage 4 handoff (see Stage 4 below).
 
-**Output of Stage 1:** State what will be built, which spec requirements
-apply, and any new requirements that need spec approval before moving to
-Stage 2.
+`spec-doc-agent` reads the spec fully and confirms the request aligns with
+it. It asks the user directly (via `AskUserQuestion`) only when something is
+genuinely ambiguous, the request extends the spec (new capability not yet
+covered), or the request actively contradicts an existing requirement — not
+as routine due-diligence. It does **not** edit the spec file at this stage,
+even if the user confirms a new or modified requirement — that write happens
+in Stage 4, once the real outcome is known. If no spec file exists at all, it
+notes what it used instead (README/AGENT_CONTEXT.md/etc.) and defers
+*creating* spec.md to Stage 4 as well, once it's known what actually shipped.
+If `spec-doc-agent` is ever unavailable, fall back to doing Stage 1 inline
+using the same logic (read spec, ask only if ambiguous/extending/
+contradicting, defer any spec edit or creation to Stage 4).
+
+**Output of Stage 1:** The agent's structured report — what will be built,
+which spec requirements apply, and any new requirement pending spec approval
+(with the user's answer) — before moving to Stage 2.
 
 ### Stage 2 — Build
 
@@ -165,6 +179,23 @@ part of every coding task (it's expensive).
 
 ### Stage 4 — Document
 
+**Resume `spec-doc-agent` — do not spawn a fresh one.** Use `SendMessage`
+with the agent id/name saved from Stage 1 (Invocation 1). This is
+**Invocation 2** of the same agent instance: it already holds Stage 1's plan
+in its own context, so brief it only with what changed since then — what
+Stage 2 (Build) actually did (diff/files touched, reasoning) and Stage 3
+(Verify)'s Go/No-Go verdict. Explicitly flag if the outcome deviates from
+Stage 1's plan (partial completion, different approach, descoped feature) —
+this is what lets it write an accurate record instead of a stale one.
+
+**If the Stage 1 agent id/name was lost** (e.g. across a long session), say
+so to `spec-doc-agent` explicitly rather than pretending continuity — it
+will refuse to reconstruct Stage 1 silently and will return
+`STATUS: INCOMPLETE` asking for the missing context. In that case, gather
+what Stage 1 concluded (from the conversation or by re-deriving it) and
+supply it explicitly, and tell the user this handoff broke and why before
+continuing.
+
 Default is **don't touch a file unless its condition below is met.** Two
 files update every task because they're cheap and are the project's memory;
 everything else is conditional — check the condition, and if it isn't met,
@@ -175,7 +206,11 @@ you skipped it — that costs the same as writing it).
 [ ] AGENT_CONTEXT.md — always. 1-2 lines under "Last Changes" with what/why.
 [ ] CHANGELOG.md     — always. One line: date + what + why.
 [ ] PROJECT_MAP.md   — only if files were added, removed, or renamed this task.
-[ ] spec.md (or similar) — only if Stage 2 changed a requirement.
+[ ] spec.md (or similar) — only if Stage 1 flagged a confirmed permanent
+    requirement or existing-requirement update, AND Stage 3 (Verify)
+    confirmed it actually shipped. A Stage 1 confirmation alone is not
+    enough — partial/descoped/unverified changes get noted as "pending" in
+    AGENT_CONTEXT.md/CHANGELOG.md instead, not written into spec.md.
 [ ] ARCHITECTURE.md  — only if a structural pattern or design actually changed.
 [ ] DEPENDENCIES.md  — only if a package was added or removed.
 [ ] DECISIONS.md     — only if a real choice was made between alternatives (see below).
@@ -202,6 +237,9 @@ covers "what changed". Format, newest entry on top:
 Create the file (with this format as its only template, no separate
 `docs/templates/` entry needed) the first time a real decision comes up.
 
+If `spec-doc-agent` is ever unavailable, fall back to doing Stage 4 inline
+using the same checklist and the same "flag deviations" rule.
+
 ### Stage 5 — Git
 
 - Check for `git-instructions.md` at the project root; if present, follow it
@@ -220,5 +258,9 @@ Create the file (with this format as its only template, no separate
 - Ask the user: retry this stage / adjust the spec (and re-validate) / abort.
 - **If spec changes during development (Stage 2), restart from Stage 1** to
   re-validate all requirements against the updated spec before continuing.
+  If `spec-doc-agent` was already spawned for this task, **resume that same
+  instance** via `SendMessage` for the re-validation (it's still before
+  Invocation 2/Document, so this is just another round of Invocation 1) —
+  don't spawn a second instance, or Stage 4 won't know which one to resume.
 - Never drop a stage or the spec check to save time — the user can only
   authorize exceptions explicitly.

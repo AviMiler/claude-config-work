@@ -13,6 +13,18 @@ the `Agent` tool, from whichever skill or conversation needs them.
   Stage 4 (Document). Judges Go/No-Go on a change: scopes what verification
   is warranted, runs targeted tests when applicable, checks for spec
   regressions, and asks before anything expensive or risky.
+- **spec-doc-agent** — Stage 1 (Spec-Validate) *and* Stage 4 (Document) of
+  the `enforcing-coding-workflow` skill, as one instance invoked twice (runs
+  on Sonnet — only two calls per task, but Stage 1's judgment call gates the
+  whole workflow, so accuracy beats cost here). Invocation 1 (before Stage
+  2/Build) reads the spec,
+  confirms the request aligns with it, and asks the user only on genuine
+  ambiguity or spec conflict. Invocation 2 (after Stage 3/Verify, resumed via
+  `SendMessage` using the id/name saved from Invocation 1) compares what was
+  actually built against its own Invocation-1 plan and updates
+  AGENT_CONTEXT.md/CHANGELOG.md/spec.md/etc. accordingly, flagging any
+  deviation. Refuses to reconstruct Invocation 1 silently if continuity is
+  lost.
 
 ## Structured Response Protocol
 
