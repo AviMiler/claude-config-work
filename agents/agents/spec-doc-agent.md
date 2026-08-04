@@ -81,10 +81,52 @@ Default is **don't touch a file unless its condition is met** — same checklist
     spec.md untouched until a future task actually ships it.
     If no spec.md existed at all (Invocation 1 flagged this), create it now
     using what was actually built as ground truth — not the original request.
-[ ] ARCHITECTURE.md  — only if a structural pattern or design actually changed.
+[ ] ARCHITECTURE.md  — only if a structural pattern or design actually changed
+    (see template below).
 [ ] DEPENDENCIES.md  — only if a package was added or removed.
 [ ] DECISIONS.md     — only if a real choice was made between alternatives.
 ```
+
+**ARCHITECTURE.md template** — six sections, each 1-3 sentences, each
+answering a question a fresh agent would otherwise explore the codebase to
+answer. If a section grows past 3 sentences, that detail belongs in
+`PROJECT_MAP.md` (file-level) instead — don't let this file become a
+second map:
+
+```
+## System Overview
+[What the system does, one level above README.]
+
+## Entry Points
+[Where execution actually starts: main file, server bootstrap, CLI command.]
+
+## Module Map
+[Coarse subsystem breakdown and what each owns — one level up from
+PROJECT_MAP.md's per-file lines.]
+
+## Data Flow
+[How a request/input moves end-to-end through the typical case.]
+
+## External Integrations
+[What this talks to outside itself, and where each is configured.]
+
+## Key Boundaries & Constraints
+[Non-obvious invariants/coupling a future agent must know before touching this.]
+
+## Design Decisions
+[Link to DECISIONS.md — do not duplicate its content here.]
+```
+
+**Doc-sync is not just additive.** When Stage 2 (Build) modified or removed
+existing behavior — not only added new code — check whether that leaves any
+doc describing the *old* state: a file's purpose header, its
+`PROJECT_MAP.md` line, an `ARCHITECTURE.md` section that referenced what
+changed, or a `spec.md` requirement that's now inaccurate. The build brief
+should flag what was changed/removed (per the skill's Stage 2 doc-sync
+rule) — if it doesn't, ask before assuming nothing needs correcting. A
+correction to an existing doc line is not optional just because it isn't
+"new" — stale-but-present documentation is worse than a gap, because it's
+trusted by default (see the skill's map-staleness rule).
 
 If a file in the checklist doesn't exist yet and its condition is met, create it minimally (a few headings) rather than deferring — but never create a conditional file "just in case" ahead of its condition actually triggering.
 

@@ -106,6 +106,33 @@ Implement the change:
 
 - Follow the code quality rules from `anthropic-skills:agentic-code` (file size,
   naming, typing, error handling, no dead abstractions).
+- **Write for agent legibility** — on top of the general quality rules above,
+  code should be structured so a future agent (with no memory of this task)
+  can understand it without reading the whole codebase:
+  - **One-line purpose header** at the top of every file you create or
+    substantially rewrite, stating what it's responsible for. Must match
+    the wording of that file's `PROJECT_MAP.md` entry exactly — if one
+    changes, the other must too (see the doc-sync rule below).
+  - **Explicit imports, no wildcards.** A future PROJECT_MAP import/dependency
+    listing has to be derivable mechanically, not guessed.
+  - **Full type signatures on inputs/outputs** of functions and public
+    interfaces — a caller (agent or human) should know a function's contract
+    from its signature, without reading the body.
+  - **No indirection beyond 2 files to understand one behavior.** If tracing
+    what a piece of code does requires jumping through 3+ files (generic
+    abstraction layers, dynamic dispatch, config-driven wiring), that's a
+    smell — flatten it unless there's a real reason for the layer.
+  - **Predictable file placement** — follow the project's existing folder
+    convention so file location is guessable, not something to search for.
+- **Keep documentation honest, not just additive.** When a change **modifies
+  or removes** existing behavior — not just adds new code — find and update
+  every place that documented the *old* behavior: the file's purpose header,
+  its `PROJECT_MAP.md` entry, `ARCHITECTURE.md` if the change touches what
+  it describes, and `spec.md` if a requirement changed. A rename, a removed
+  function, an inverted default, a deleted module — each of these leaves a
+  stale doc somewhere if you only ever add and never correct. This is a
+  Stage 2 responsibility (you know what you removed/changed); Stage 4 then
+  formalizes it, but Stage 4 only sees what you flag, so surface it.
 - Keep the change scoped to what Stage 1 validated — no drive-by refactors.
 - **If new requirements emerge during build:**
   - Pause and ask the user: "A new requirement came up: [X]. Should this be
@@ -211,10 +238,47 @@ you skipped it — that costs the same as writing it).
     confirmed it actually shipped. A Stage 1 confirmation alone is not
     enough — partial/descoped/unverified changes get noted as "pending" in
     AGENT_CONTEXT.md/CHANGELOG.md instead, not written into spec.md.
-[ ] ARCHITECTURE.md  — only if a structural pattern or design actually changed.
+[ ] ARCHITECTURE.md  — only if a structural pattern or design actually changed
+    (see template below).
 [ ] DEPENDENCIES.md  — only if a package was added or removed.
 [ ] DECISIONS.md     — only if a real choice was made between alternatives (see below).
 ```
+
+**ARCHITECTURE.md template — six sections, each answers a question a fresh
+agent would otherwise have to explore the codebase to answer:**
+
+```
+## System Overview
+[What the system does, one level above README — 2-3 sentences.]
+
+## Entry Points
+[Where execution actually starts: main file, server bootstrap, CLI command.
+So an agent doesn't Grep for "where does this begin."]
+
+## Module Map
+[Coarse breakdown into subsystems and what each owns — one level up from
+PROJECT_MAP.md's per-file lines. E.g. "auth/ handles login+session,
+delegates token storage to db/".]
+
+## Data Flow
+[How a request/input moves end-to-end through a typical case. Not every
+path — the common one.]
+
+## External Integrations
+[What this talks to outside itself — databases, APIs, third-party
+services — and where each is configured.]
+
+## Key Boundaries & Constraints
+[Non-obvious things a future agent must know before touching this code:
+invariants, "never call X without Y", hidden coupling.]
+
+## Design Decisions
+[Link to DECISIONS.md — do not duplicate its content here.]
+```
+
+Keep each section to 1-3 sentences. If a section grows past that, the
+detail belongs in `PROJECT_MAP.md` (file-level) instead of here
+(system-level) — move it down, don't let this file become a second map.
 
 If `AGENT_CONTEXT.md` or `CHANGELOG.md` don't exist yet, create them from
 `anthropic-skills:agentic-code`'s templates (small — a few headings). Don't
