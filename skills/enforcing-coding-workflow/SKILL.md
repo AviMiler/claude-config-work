@@ -105,7 +105,9 @@ which spec requirements apply, and any new requirement pending spec approval
 Implement the change:
 
 - Follow the code quality rules from `anthropic-skills:agentic-code` (file size,
-  naming, typing, error handling, no dead abstractions).
+  naming, typing, error handling, no dead abstractions), **and** load
+  `code-standards` alongside it — a growing set of personal rules on top of
+  (not instead of) the official skill.
 - **Write for agent legibility** — on top of the general quality rules above,
   code should be structured so a future agent (with no memory of this task)
   can understand it without reading the whole codebase:
