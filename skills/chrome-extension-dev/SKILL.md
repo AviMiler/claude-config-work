@@ -11,6 +11,12 @@ description: >
 
 # Chrome Extension Developer
 
+⚠️ Read First — also load `anthropic-skills:agentic-code` (general code
+quality) and `code-standards` (personal rules on top of it). This skill
+adds Chrome-extension-specific rules and constraints on top of both —
+where they conflict, this skill wins (see `enforcing-coding-workflow`
+Stage 2's conflict rule).
+
 ## Core Constraints
 
 **Never use:**

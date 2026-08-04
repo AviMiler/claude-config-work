@@ -108,6 +108,26 @@ Implement the change:
   naming, typing, error handling, no dead abstractions), **and** load
   `code-standards` alongside it — a growing set of personal rules on top of
   (not instead of) the official skill.
+- **Before writing any code, search for a topic-specific skill and load it
+  if one applies.** `code-standards` holds general rules; stack/domain-specific
+  skills (e.g. `chrome-extension-dev`, and others added over time) hold
+  rules specific to that stack. Check the available skills list for one
+  whose description matches what this task is actually building (language,
+  framework, platform) and load it alongside `agentic-code` + `code-standards`.
+  A task can match zero, one, or several — load whichever actually apply,
+  don't force one.
+- **Check the project for mandatory skills.** If the project's `CLAUDE.md`
+  has a `## Required Skills` section, load every skill listed there
+  regardless of whether it would have matched automatically — this lets a
+  project pin skills explicitly instead of relying on description-matching
+  alone. If `CLAUDE.md` exists but has no such section, that's not an error,
+  just nothing pinned.
+- **On conflict between general and topic-specific rules, the topic-specific
+  rule wins** (it usually reflects a real technical constraint the general
+  rule didn't anticipate — e.g. a platform that can't use a build step).
+  **If the conflict can't be cleanly resolved even by that precedence** (both
+  rules seem to apply and neither obviously yields), stop and ask the user
+  rather than picking silently.
 - **Write for agent legibility** — on top of the general quality rules above,
   code should be structured so a future agent (with no memory of this task)
   can understand it without reading the whole codebase:

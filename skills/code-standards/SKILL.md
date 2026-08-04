@@ -15,6 +15,13 @@ on top of it. Load both. Where they overlap, this file's rules are more
 specific to how this user wants code written; where they don't overlap,
 both apply.
 
+This is the **general** member of a loose family — rules here apply to
+every stack. **Topic-specific** skills (e.g. `chrome-extension-dev`) hold
+rules for one stack only and load alongside this one when the task matches
+that stack; on conflict, the topic-specific skill wins. See
+`skills/README.md`'s "General vs. topic-specific skills" section for the
+full convention and the skeleton new topic skills should follow.
+
 This file grows one rule at a time. Each rule is self-contained — read the
 whole file, but a rule shouldn't depend on context from another rule to
 make sense.
