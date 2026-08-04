@@ -1,45 +1,19 @@
-# claude-skills
+# Skills
 
-Personal Claude skill library — shared across claude.ai and Claude Code.
-
-## Skills
+See the [repo root README](../README.md) for how these fit together with `agents/`.
 
 | Skill | Description |
 |---|---|
-| [`enforcing-coding-workflow`](./enforcing-coding-workflow/SKILL.md) | Mandatory 4-stage sequence for every coding task — validate → build → document → git |
+| [`enforcing-coding-workflow`](./enforcing-coding-workflow/SKILL.md) | Mandatory 5-stage sequence for every coding task — spec-validate → build → verify → document → git |
+| [`bug-triage`](./bug-triage/SKILL.md) | Separate process for a reported bug — reproduce → isolate → fix → verify. Not a stage of the workflow above. |
 | [`chrome-extension-dev`](./chrome-extension-dev/SKILL.md) | Vanilla JavaScript Chrome Extension (Manifest V3) development — no build tools |
 | [`new-project-setup`](./new-project-setup/SKILL.md) | Bootstraps a new project — writes `.claude/settings.local.json` permissions and wires in `enforcing-coding-workflow` |
-
-## Structure
-
-```
-claude-skills/
-├── enforcing-coding-workflow/
-│   └── SKILL.md
-├── chrome-extension-dev/
-│   ├── SKILL.md
-│   └── references/
-│       └── chrome-extension.md
-├── new-project-setup/
-│   └── SKILL.md
-└── README.md
-```
-
-## Usage in Claude Code
-
-```bash
-# Clone once
-git clone https://github.com/YOUR_USERNAME/claude-skills ~/.claude-skills
-
-# Update
-git -C ~/.claude-skills pull
-```
 
 ## Convention
 
 Every dev skill starts with a reference to the official `anthropic-skills:agentic-code`
-marketplace skill (this repo no longer ships its own copy):
+marketplace skill for shared tracking-file templates and code quality rules:
 
 ```
-⚠️ Read First — load anthropic-skills:agentic-code skill
+⚠️ Read First — also load anthropic-skills:agentic-code
 ```
