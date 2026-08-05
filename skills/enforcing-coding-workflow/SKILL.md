@@ -131,25 +131,14 @@ returns `STATUS: INCOMPLETE`; gather what Stage 1 concluded and supply it,
 and tell the user the handoff broke.
 
 Default: **don't touch a file unless its condition is met**, and skip
-silently (no explanation) when it isn't:
+silently (no explanation) when it isn't. The exact per-file checklist
+(which conditions gate AGENT_CONTEXT.md, CHANGELOG.md, PROJECT_MAP.md,
+spec.md, ARCHITECTURE.md, DEPENDENCIES.md, DECISIONS.md) lives in
+`spec-doc-agent.md`'s "INVOCATION 2 — Document" section — single source,
+don't copy it here.
 
-```
-[ ] AGENT_CONTEXT.md — always. 1-2 lines under "Last Changes".
-[ ] CHANGELOG.md     — always. One line: date + what + why.
-[ ] PROJECT_MAP.md   — only if files were added/removed/renamed.
-[ ] spec.md          — only if Stage 1 flagged a confirmed requirement
-    change AND Stage 3 confirmed it shipped. Otherwise note "pending" in
-    AGENT_CONTEXT.md/CHANGELOG.md instead.
-[ ] ARCHITECTURE.md  — only if structure/design actually changed. Template
-    for this file lives in spec-doc-agent.md — single source, don't copy
-    it here.
-[ ] DEPENDENCIES.md  — only if a package was added/removed.
-[ ] DECISIONS.md     — only if a real alternative was considered. Format:
-    date + title, then Decision / Alternatives considered / Why.
-```
-
-If `spec-doc-agent` is unavailable, do Stage 4 inline with the same
-checklist and deviation-flagging rule.
+If `spec-doc-agent` is unavailable, read that section of its file directly
+and do Stage 4 inline with the same checklist and deviation-flagging rule.
 
 ### Stage 5 — Git
 

@@ -9,13 +9,12 @@ each piece documents its own details where it lives.
 ```
 claude-config/
 ├── skills/
-│   ├── enforcing-coding-workflow/  — the 5-stage process for every coding task
-│   └── bug-triage/                 — separate process for fixing a reported bug
+│   └── enforcing-coding-workflow/  — the 5-stage process for every coding task
 ├── agents/
-│   ├── git-instructions.md         — how this repo itself is committed/pushed
 │   └── agents/
 │       ├── spec-doc-agent.md       — Stage 1 + Stage 4 of the workflow
 │       └── verify-agent.md         — Stage 3 of the workflow
+├── git-instructions.md             — how this repo itself is committed/pushed
 ├── settings.json                   — global Claude Code settings (hooks, permissions)
 └── CLAUDE.md                       — global behavioral instructions
 ```
@@ -46,11 +45,6 @@ Stages 2 and 5 (Build, Git) run inline in the main conversation — no
 subagent, since they don't benefit from independent judgment the way
 verification and spec/doc work do.
 
-`bug-triage` is a **separate** skill, not a stage of the above — it only
-loads when something is reported broken (reproduce → isolate → fix →
-verify), and any resulting code fix still goes through Stage 3 (Verify) of
-`enforcing-coding-workflow` before it's considered done.
-
 Full detail on each stage — the doc-sync rules, the ARCHITECTURE.md
 template, the agent-legibility code rules — lives in
 [`skills/enforcing-coding-workflow/SKILL.md`](skills/enforcing-coding-workflow/SKILL.md),
@@ -70,4 +64,4 @@ git clone https://github.com/AviMiler/claude-config ~/claude-config
 To pull an update from GitHub into the live `~/.claude` folders, copy the
 relevant subfolder(s) over and restart Claude Code if agent/skill
 definitions changed. To push a local change, copy back into this clone,
-commit, and push per `agents/git-instructions.md`.
+commit, and push per `git-instructions.md`.

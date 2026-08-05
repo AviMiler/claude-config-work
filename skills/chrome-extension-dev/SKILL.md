@@ -17,6 +17,12 @@ adds Chrome-extension-specific rules and constraints on top of both —
 where they conflict, this skill wins (see `enforcing-coding-workflow`
 Stage 2's conflict rule).
 
+Full copy-pasteable patterns (manifest.json, service worker, content
+script, popup, storage, message-flow, permission checklist) live in
+[`references/chrome-extension.md`](references/chrome-extension.md) — read
+it now, before writing code. This file covers only the rules and gotchas;
+that one covers the code.
+
 ## Core Constraints
 
 **Never use:**
@@ -75,28 +81,11 @@ No package.json. No build step either way. Manifest + JS files → drag into Chr
 - Storage: use `chrome.storage.local` only, never `localStorage`
 - Content script runs isolated from page JS — use `window.postMessage` for cross-realm communication
 
-### Preventing double-injection in content scripts
-```js
-if (window.__extLoaded) return;
-window.__extLoaded = true;
-```
+### Preventing double-injection, and message passing
 
-### Message passing (background ↔ popup/content)
-```js
-// Send (popup.js, content.js)
-chrome.runtime.sendMessage({ type: 'ACTION', data: payload }, response => {
-  console.log(response);
-});
-
-// Listen (background.js)
-chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
-  if (msg.type === 'ACTION') {
-    // Do work
-    sendResponse({ success: true });
-  }
-  return true; // Required if sendResponse is async
-});
-```
+Guard pattern and the full send/listen shape are in
+`references/chrome-extension.md` — don't reproduce them here, use them
+as written from that file.
 
 ### File size & splitting
 
