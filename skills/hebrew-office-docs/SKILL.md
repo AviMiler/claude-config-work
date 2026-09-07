@@ -109,19 +109,26 @@ Both under-splitting (one run spanning two scripts) and over-splitting
 PowerPoint to mis-place words relative to each other — get the run
 boundaries to match the script boundaries exactly, no more, no fewer.
 
-**Punctuation follows the surrounding sentence, not the term it touches.**
-Punctuation marks (commas, colons, parentheses, quotes, periods, dashes,
-etc.) are script-neutral Unicode characters — never classify them as
-"Latin" just because they sit next to an English term. In a Hebrew
-sentence, every punctuation mark stays part of the Hebrew (`he-IL`) run
-even when it directly touches an embedded English word or acronym; only
-the English term's own letters become their own `en-US` run. So in
-`הפרויקט (Alpha) הסתיים בשלב 2, בהצלחה.` the parentheses, the comma, and
-the final period are all Hebrew — only `Alpha` is its own Latin run, split
-out of and immediately rejoined by Hebrew runs on both sides. Do not let a
-segmentation regex peel trailing/leading punctuation off into the Latin
-run alongside the English word; that misplaces the punctuation exactly
-like the under/over-splitting cases above.
+**Punctuation and spaces follow the surrounding sentence, not the term
+they touch.** Punctuation marks (commas, colons, parentheses, quotes,
+periods, dashes, etc.) *and* the space characters between a Hebrew word
+and an embedded Latin term are script-neutral Unicode characters — never
+classify them as "Latin" just because they sit next to an English term. In
+a Hebrew sentence, every such character stays part of the Hebrew (`he-IL`)
+run even when it directly touches an embedded English word or acronym;
+only the English term's own letters become their own `en-US` run. So in
+`הפרויקט (Alpha) הסתיים בשלב 2, בהצלחה.` the parentheses, the comma, the
+final period, and the spaces immediately before/after `Alpha` are all
+Hebrew — only the four letters `Alpha` are their own Latin run, split out
+of and immediately rejoined by Hebrew runs on both sides. Do not let a
+segmentation regex peel trailing/leading punctuation *or whitespace* off
+into the Latin run alongside the English word; that misplaces the
+character exactly like the under/over-splitting cases above.
+
+This does **not** apply to a space *inside* a continuous Latin phrase —
+the space in "Project Alpha" stays part of that single `en-US` run (see
+"Do not over-split" above); only a space that sits directly on the
+Hebrew↔Latin script boundary belongs to the Hebrew run.
 
 ## Verification
 
