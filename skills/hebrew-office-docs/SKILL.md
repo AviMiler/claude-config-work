@@ -109,6 +109,20 @@ Both under-splitting (one run spanning two scripts) and over-splitting
 PowerPoint to mis-place words relative to each other — get the run
 boundaries to match the script boundaries exactly, no more, no fewer.
 
+**Punctuation follows the surrounding sentence, not the term it touches.**
+Punctuation marks (commas, colons, parentheses, quotes, periods, dashes,
+etc.) are script-neutral Unicode characters — never classify them as
+"Latin" just because they sit next to an English term. In a Hebrew
+sentence, every punctuation mark stays part of the Hebrew (`he-IL`) run
+even when it directly touches an embedded English word or acronym; only
+the English term's own letters become their own `en-US` run. So in
+`הפרויקט (Alpha) הסתיים בשלב 2, בהצלחה.` the parentheses, the comma, and
+the final period are all Hebrew — only `Alpha` is its own Latin run, split
+out of and immediately rejoined by Hebrew runs on both sides. Do not let a
+segmentation regex peel trailing/leading punctuation off into the Latin
+run alongside the English word; that misplaces the punctuation exactly
+like the under/over-splitting cases above.
+
 ## Verification
 
 After generating the file, unzip it and grep the run XML
