@@ -89,11 +89,25 @@ wrong:
 ## Splitting mixed-language text into runs
 
 Before writing any paragraph/text-box content that mixes Hebrew and
-Latin/numeric text, split it into segments by script/language first (e.g.
+Latin/numeric text, split it into segments by actual script first (e.g.
 regex on Hebrew Unicode block `֐-׿` vs. everything else), write
-each segment as its own run, and tag each run's `lang` accordingly
-(`he-IL` for Hebrew segments, `en-US` — or leave default — for Latin/
-numeric segments). Do not write a single run spanning both.
+each segment as its own run, and tag each run's `lang` accordingly —
+`he-IL` for Hebrew segments, `en-US` for Latin/numeric segments. Do not
+write a single run spanning both scripts.
+
+**Do not over-split, either.** Split only at actual script boundaries —
+never fragment one continuous same-language phrase into multiple runs at
+its internal punctuation (commas, colons, parentheses, etc.). After
+segmenting, collapse adjacent runs that ended up with the same language
+back into a single run. The result should read exactly as a person typing
+bilingually would type it: they don't switch keyboards mid-sentence for a
+comma, so "Project Alpha, Phase 2: Overview" — all Latin — is one `en-US`
+run, not three or four split at the comma and colon; only the point where
+the script actually changes (Latin → Hebrew or back) starts a new run.
+Both under-splitting (one run spanning two scripts) and over-splitting
+(needlessly breaking a same-language phrase into several runs) cause
+PowerPoint to mis-place words relative to each other — get the run
+boundaries to match the script boundaries exactly, no more, no fewer.
 
 ## Verification
 
