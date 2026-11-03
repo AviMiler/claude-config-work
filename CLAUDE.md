@@ -1,60 +1,11 @@
 # Claude Code Instructions
 
-## התנהגות כללית
+Short rules. Follow them exactly.
 
-### צליל התראה לאירועים שונים
-
-בכל אחד מהמקרים הבאים — מתוגמר צליל התראה דרך Windows System Sound:
-
-**הגדרה:** מוגדר via Claude Code Hooks
-- **Shell:** `powershell` (explicit)
-- **Command:** `(New-Object Media.SoundPlayer 'C:\Windows\Media\Windows Notify.wav').PlaySync()`
-- **Sound:** Windows Notify notification sound
-- **Location:** `~/.claude/settings.json`
-
-#### אירועים עם צליל:
-
-| אירוע | תיאור | Hook Event |
-|------|-------|-----------|
-| סיום משימה | כשמסיימת משימה | `Stop` |
-| המתנה לתשובה | כשמחכה לתשובתך | `Stop` |
-| בקשת הרשאה | כשביקשת הרשאה להפעיל כלי | `PermissionRequest` |
-| שאלות | כשנשלחת שאלה או הודעה | `Notification` |
-
-זה חלק מהקונפיגורציה הגלובלית של Claude Code ופועל בכל שיחה.
-
----
-
-## הרשאות קריאה וכתיבה
-
-### הגדרה כללית
-
-כל פרוייקט שנפתח — הרשאות קריאה וכתיבה **אוטומטיות ללא בקשה**:
-
-**הגדרה:** במשתנה `permissions` ב-`~/.claude/settings.json`
-- **defaultMode:** `acceptEdits` - קבלה אוטומטית של כל פעולות עריכה
-- **allow:** `Read`, `Edit`, `Write`, `Bash` - הרשאות חופשיות
-
-**פירוש:**
-- ✅ קריאת קבצים — ללא הרשאה
-- ✅ עריכת קבצים — ללא הרשאה
-- ✅ יצירת קבצים — ללא הרשאה
-- ✅ הרצת פקודות Bash — ללא הרשאה
-
-זה מאפשר לי לעבוד בחופשיות בכל תיקיית פרוייקט ללא הפסקות לבקשות הרשאה.
-
----
-
-## Workflow תכנות — חובה בכל משימת קוד
-
-**בכל משימה שכוללת כתיבה/עריכה/תיקון של קוד — בכל פרויקט — חובה לטעון קודם את הסקיל `enforcing-coding-workflow`** (דרך ה-Skill tool), לפני כתיבת שורת קוד ראשונה.
-
-הסקיל הזה אוכף רצף קבוע של 4 שלבים שאסור לשבור או לדלג עליו:
-
-```
-1. VALIDATE → 2. BUILD → 3. DOCUMENT → 4. GIT
-```
-
-זה חל על כל משימת פיתוח — פיצ'ר חדש, תיקון באג, ריפקטור — גם אם היא נשמעת קטנה. הסקיל `enforcing-coding-workflow` בעצמו מפנה לסקיל `anthropic-skills:agentic-code` לתבניות התיעוד והכללים לאיכות קוד, כך שלרוב שני הסקילים ייטענו יחד.
-
-אין לדלג על שלב (במיוחד תיעוד ו-git) אלא אם המשתמש מבקש זאת במפורש עבור המשימה הנוכחית.
+- Every code change (feature, bug fix, refactor): load the skill `enforcing-coding-workflow` BEFORE writing any code.
+- Ask the user at the start of every task: new branch or stay on the current one? A new branch always starts from the central branch.
+- The central branch of a project is written in that project's own `CLAUDE.md` as `Central branch: <name>`. If the line is missing, ask the user and offer to add it.
+- Never commit, push, open a PR or merge. The user does all of that.
+- After build and verify, STOP. Wait for the user to test and give feedback. Only move on when the user says the result is good.
+- Decisions made by the user are logged in `DECISIONS.md` in the project root.
+- Keep answers and files short. If you are unsure, ask the user.

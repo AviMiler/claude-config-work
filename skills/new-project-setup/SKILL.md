@@ -16,9 +16,9 @@ description: >
 ⚠️ Read First — this skill only covers project *bootstrap*. The moment any
 code is written, hand off to `enforcing-coding-workflow`
 (`/enforcing-coding-workflow`) — every coding task in this project must go
-through its 5 stages (spec-validate → build → verify → document → git). Load
-that skill now and re-load it at the start of every future coding task in
-this project; that skill in turn references `anthropic-skills:agentic-code`.
+through its stages (start → check → build → verify → user test → document).
+Load that skill now and re-load it at the start of every future coding task
+in this project; that skill in turn references `agentic-code-local`.
 
 ## When this applies
 
@@ -36,10 +36,14 @@ A new or near-empty folder, "start a new project," "open a new project,"
    project's actual absolute path. This file is personal/local — make sure
    it's git-ignored (add `.claude/settings.local.json` to `.gitignore` if not
    already covered).
-3. **Point at the workflow skill.** Tell the user once that
+3. **Record the central branch.** Ask the user for the project's central
+   branch (for example `main`) and write a `Central branch: <name>` line in
+   the project's `CLAUDE.md` (create it if missing). The workflow reads it at
+   the start of every task.
+4. **Point at the workflow skill.** Tell the user once that
    `enforcing-coding-workflow` now governs all coding work in this project,
-   so they know why later requests will go through its 5 stages.
-4. **Never bypass confirmation during setup itself** — even though the
+   so they know why later requests will go through its stages.
+5. **Never bypass confirmation during setup itself** — even though the
    template below marks some commands `ask` rather than `deny`, run nothing
    that pushes, force-modifies, or deletes without asking the user directly,
    regardless of what the JSON permits.
@@ -64,8 +68,6 @@ Scope every path-based rule to this project's folder — never write a bare
       "Bash(git show:*)",
       "Bash(git branch:*)",
       "Bash(git remote -v)",
-      "Bash(git add:*)",
-      "Bash(git commit:*)",
       "Bash(git checkout:*)",
       "Bash(git switch:*)",
       "Bash(git stash:*)",
@@ -76,6 +78,8 @@ Scope every path-based rule to this project's folder — never write a bare
       "Bash(cat:*)"
     ],
     "ask": [
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
       "Bash(git push:*)",
       "Bash(git push --force:*)",
       "Bash(git reset --hard:*)",
@@ -94,12 +98,11 @@ Code's path-scoped permission syntax: `Read(//abs/path/**)`).
 ### Why these choices (confirmed with user, 2026-07-27)
 
 - **Auto-allowed:** status/diff/log/show/branch/remote (read-only) and
-  add/commit/checkout/switch/stash/fetch/pull (local-only, reversible) — no
-  reason to interrupt for these on every single command.
-- **`git push` always asks** — every push, on every branch, still prompts.
-  Pushing is the moment local work becomes visible to a shared remote, so it
-  stays a manual confirmation regardless of how routine the rest of the
-  session has been.
+  checkout/switch/stash/fetch/pull (local-only, reversible, needed for the
+  branch step at the start of a task) — no reason to interrupt for these.
+- **`git add`, `git commit` and `git push` always ask** — in this workflow
+  the user commits, pushes and opens the PR, so the agent must not do it
+  silently.
 - **Destructive/hard-to-reverse commands stay on `ask`, not `deny`**
   (`reset --hard`, `clean -f`, `push --force`, `rm -rf`, `rebase`) — flagged
   for a manual yes/no each time rather than silently blocked, since the user
