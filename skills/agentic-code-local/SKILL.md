@@ -30,6 +30,7 @@ The code is written by you, but a human programmer tests, reviews and approves e
 - `CHANGELOG.md` - one line per change: date, what, why.
 - `PROJECT_MAP.md` - one line per file: path and its purpose. Update when files are added, removed or renamed.
 - `DECISIONS.md` - the user's decisions. One line each:
-  `YYYY-MM-DD HH:MM | decision | reason`
+  `D-NNN | YYYY-MM-DD HH:MM | status | decision | reason`
+  Status: `received`, `done`, or `superseded by D-NNN`. Get the time with `date`.
 
 If `PROJECT_MAP.md` exists, use it before searching the codebase. If it is wrong, fix it.

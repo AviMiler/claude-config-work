@@ -15,8 +15,8 @@ claude-config-work/
 ├── agents/agents/
 │   ├── spec-doc-agent.md           - CHECK against DECISIONS.md, DOCUMENT after approval
 │   └── verify-agent.md             - tests + regression check, Go/No-Go
-├── git-instructions.md             - branch question at task start; user does commit/push/PR
-├── settings.json                   - permissions only
+├── git-instructions.md             - user does commit/push/PR
+├── settings.json                   - permissions (ask on risky git/rm commands)
 └── CLAUDE.md                       - short global rules
 ```
 
@@ -25,21 +25,22 @@ claude-config-work/
 Every code change goes through `enforcing-coding-workflow`:
 
 ```
-0. START -> 1. CHECK -> 2. BUILD -> 3. VERIFY -> 4. USER TEST -> 5. DOCUMENT
+1. CHECK -> 2. BUILD -> 3. VERIFY -> 4. USER TEST -> 5. DOCUMENT
 ```
 
-- **START**: the agent asks whether to open a new branch or stay on the current one. A new branch always comes off the project's central branch (written in that project's `CLAUDE.md` as `Central branch: <name>`). This is the only git step.
+**Fast track** for trivial changes (typo, comment, UI string): BUILD -> short VERIFY -> USER TEST -> DOCUMENT. No CHECK.
+
 - **CHECK**: `spec-doc-agent` compares the request with `DECISIONS.md`.
 - **BUILD**: the agent writes the change.
-- **VERIFY**: `verify-agent` runs tests and a regression check.
+- **VERIFY**: `verify-agent` runs tests and a regression check. Answers Go, Conditional Go (no tests exist, manual checks listed) or No-Go.
 - **USER TEST**: the agent stops. The user tests and gives feedback. The loop BUILD -> VERIFY -> USER TEST repeats until the user says the result is good.
-- **DOCUMENT**: `spec-doc-agent` updates the docs and logs the user's new decisions.
+- **DOCUMENT**: `spec-doc-agent` updates the docs and marks the cycle's decisions `done`.
 
 The user commits, pushes and opens the PR. The agent never does.
 
 ### DECISIONS.md
 
-Lives in each project's root. It holds only decisions made by the human user, one line each: `YYYY-MM-DD HH:MM | decision | reason`. After every cycle, if the user made a decision, a line is added.
+Lives in each project's root. It holds only decisions made by the human user, one line each: `D-NNN | YYYY-MM-DD HH:MM | status | decision | reason`. A decision is written the moment the user makes it (status `received`); DOCUMENT sets it to `done`. A replaced decision gets `superseded by D-NNN`. CHECK ignores superseded lines.
 
 ## Using this repo
 

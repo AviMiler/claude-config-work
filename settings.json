@@ -6,6 +6,14 @@
       "Write",
       "Bash"
     ],
+    "ask": [
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(git reset --hard:*)",
+      "Bash(git clean:*)",
+      "Bash(git rebase:*)",
+      "Bash(rm -rf:*)"
+    ],
     "defaultMode": "acceptEdits"
   }
 }

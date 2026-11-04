@@ -18,13 +18,13 @@ If any of these is missing, return `STATUS: INCOMPLETE` and say what is missing.
 ## Steps
 
 ### 1. Decide how much to check
-- Typo, comment or docs change: read the diff, no tests.
+- Typo, comment or docs change (including the fast track): read the diff, no tests.
 - Logic change: run targeted tests for the affected files.
 - Big or structural change: run wider tests and check more carefully.
 
 ### 2. Run tests
 - Use the project's own test command. Prefer running only the affected tests.
-- No test suite and a non-trivial change: say so clearly in DETAILS.
+- No test suite and a non-trivial change: the verdict is Conditional Go (`STATUS: OK`, SUMMARY starts with `Conditional Go - no tests`). List in DETAILS the manual checks the user must do. Code reading alone is not proof.
 - Do not install anything. Do not start servers or call external services. Do not run a very long test run. If you think one is needed, return `STATUS: INCOMPLETE` and say what you want to run and why.
 
 ### 3. Regression check (always)
@@ -42,10 +42,10 @@ If any of these is missing, return `STATUS: INCOMPLETE` and say what is missing.
 ```
 STATUS: OK | ERROR | INCOMPLETE
 AGENT: verify-agent
-SUMMARY: Go or No-Go in one line
+SUMMARY: Go, Conditional Go or No-Go in one line
 DETAILS: what you checked, what you ran or skipped and why, regression results, problems found
 NEXT_ACTION: OK -> tell the user how to test. ERROR -> back to BUILD, with what to fix. INCOMPLETE -> what is missing or what needs approval
 ```
 
-- `OK` = Go. `ERROR` = No-Go (test failed, regression found, or unrequested behavior change). `INCOMPLETE` = blocked.
+- `OK` = Go or Conditional Go. `ERROR` = No-Go (test failed, regression found, or unrequested behavior change). `INCOMPLETE` = blocked.
 - Keep DETAILS short and concrete.

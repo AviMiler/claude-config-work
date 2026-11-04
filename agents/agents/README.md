@@ -8,10 +8,10 @@ Each call starts with no memory, so the caller must give a full brief every time
 
 ## Agents
 
-- **verify-agent** - VERIFY step. Runs targeted tests, a regression check, and a quick quality check on the changed files. Returns Go or No-Go. Read-only: it never edits code.
+- **verify-agent** - VERIFY step. Runs targeted tests, a regression check, and a quick quality check on the changed files. Returns Go, Conditional Go (no tests exist) or No-Go. Read-only: it never edits code.
 - **spec-doc-agent** - two independent modes:
   - **CHECK** (before BUILD): checks the request against `DECISIONS.md`, the log of the user's decisions. Reports a conflict as a question for the user.
-  - **DOCUMENT** (after the user approves the result): updates `AGENT_CONTEXT.md`, `CHANGELOG.md`, `PROJECT_MAP.md` and appends the user's new decisions to `DECISIONS.md`.
+  - **DOCUMENT** (after the user approves the result): updates `AGENT_CONTEXT.md`, `CHANGELOG.md`, `PROJECT_MAP.md` and marks this cycle's decisions `done` in `DECISIONS.md`.
 
 ## Response format
 

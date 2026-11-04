@@ -4,11 +4,11 @@ See the [repo root README](../README.md) for how these fit together with `agents
 
 | Skill | Description |
 |---|---|
-| [`enforcing-coding-workflow`](./enforcing-coding-workflow/SKILL.md) | Workflow for every code change: start (branch) -> check -> build -> verify (with regression) -> user test -> document |
+| [`enforcing-coding-workflow`](./enforcing-coding-workflow/SKILL.md) | Workflow for every code change: check -> build -> verify (with regression) -> user test -> document |
 | [`agentic-code-local`](./agentic-code-local/SKILL.md) | Local replacement for `anthropic-skills:agentic-code`: short quality rules, tracking-file templates, human-in-the-loop rule |
 | [`code-standards`](./code-standards/SKILL.md) | **General** code-writing rules for every stack. Loaded during BUILD. |
 | [`chrome-extension-dev`](./chrome-extension-dev/SKILL.md) | **Topic-specific.** Vanilla JavaScript Chrome Extension (Manifest V3), no build tools. Loaded only for Chrome extension tasks. |
-| [`new-project-setup`](./new-project-setup/SKILL.md) | Bootstraps a new project: local permissions, central branch line in the project `CLAUDE.md`, and the workflow skill |
+| [`new-project-setup`](./new-project-setup/SKILL.md) | Bootstraps a new project: local permissions and the workflow skill |
 
 ## Convention
 
