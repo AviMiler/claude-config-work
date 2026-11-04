@@ -23,6 +23,7 @@ The code is written by you, but a human programmer tests, reviews and approves e
 - Do not hide behavior behind more than 2 files.
 - Follow the folder and naming pattern that already exists in the project.
 - No unused code, no commented-out code, no abstraction used in only one place.
+- At every place you change, add a very short comment: what you did and why (one line).
 - When you change or remove behavior, update every doc that described the old behavior.
 
 ## Tracking files (create small, only when needed)
