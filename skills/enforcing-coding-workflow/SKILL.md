@@ -10,7 +10,7 @@ description: >
 
 # Coding Workflow
 
-Read first: load `agentic-code-local` and `code-standards`. If the task matches a topic skill (for example `chrome-extension-dev`), load it too. If the project `CLAUDE.md` has a `## Required Skills` section, load those skills.
+Read first: load `agentic-code-local`. If the task matches a topic skill (for example `chrome-extension-dev`), load it too. If the project `CLAUDE.md` has a `## Required Skills` section, load those skills.
 
 Applies to ANY change to code. Does NOT apply to questions, read-only review or exploration.
 
@@ -20,9 +20,9 @@ Work on the current branch. Do not ask about branches (see `git-instructions.md`
 
 **Fast track** - trivial change only: typo, comment, docs text, a variable name, a UI string. Not for logic changes.
 ```
-BUILD  ->  VERIFY (short)  ->  USER TEST  ->  DOCUMENT
+BUILD  ->  VERIFY (short)  ->  USER TEST
 ```
-No CHECK. VERIFY only reads the diff. USER TEST is still mandatory. If unsure whether a change is trivial, use the full track. Tell the user which track you chose.
+No CHECK and no DOCUMENT. VERIFY only reads the diff. USER TEST is still mandatory. Decisions made by the user are still logged in `DECISIONS.md`. If unsure whether a change is trivial, use the full track. Tell the user which track you chose.
 
 **Full track** - everything else.
 ```
@@ -38,7 +38,7 @@ Call the `spec-doc-agent` in CHECK mode. Brief it with: the user's request and t
 
 ### 2. BUILD
 - Do only what the request asks. No extra refactoring.
-- Follow `agentic-code-local` and `code-standards`.
+- Follow `agentic-code-local`.
 - Remember every file you create, change or delete.
 
 ### 3. VERIFY

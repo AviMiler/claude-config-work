@@ -64,9 +64,6 @@ Scope every path-based rule to this project's folder — never write a bare
       "Bash(git show:*)",
       "Bash(git branch:*)",
       "Bash(git remote -v)",
-      "Bash(git checkout:*)",
-      "Bash(git switch:*)",
-      "Bash(git stash:*)",
       "Bash(git fetch:*)",
       "Bash(git pull:*)",
       "Bash(ls:*)",
@@ -74,6 +71,9 @@ Scope every path-based rule to this project's folder — never write a bare
       "Bash(cat:*)"
     ],
     "ask": [
+      "Bash(git checkout:*)",
+      "Bash(git switch:*)",
+      "Bash(git stash:*)",
       "Bash(git commit:*)",
       "Bash(git push:*)",
       "Bash(git push --force:*)",
@@ -89,24 +89,3 @@ Scope every path-based rule to this project's folder — never write a bare
 
 Replace `//ABS/PATH/TO/PROJECT` with the project's real absolute path (Claude
 Code's path-scoped permission syntax: `Read(//abs/path/**)`).
-
-### Why these choices
-
-- **Auto-allowed:** status/diff/log/show/branch/remote (read-only) and
-  checkout/switch/stash/fetch/pull (local-only, reversible) — no reason to
-  interrupt for these.
-- **`git commit` and `git push` always ask** — in this workflow
-  the user commits, pushes and opens the PR, so the agent must not do it
-  silently.
-- **Destructive/hard-to-reverse commands stay on `ask`, not `deny`**
-  (`reset --hard`, `clean -f`, `push --force`, `rm -rf`, `rebase`) — flagged
-  for a manual yes/no each time rather than silently blocked, since the user
-  may occasionally need one of these deliberately.
-- File-level `Read`/`Edit`/`Write`/`Glob`/`Grep` are scoped to the project
-  folder only, so this permission set never leaks into sibling projects on
-  the same machine.
-
-If the user's own preferences differ from the defaults above (e.g. they want
-`git push` auto-allowed, or want destructive commands denied outright),
-adjust the `allow`/`ask`/`deny` arrays accordingly before writing the file —
-these are a sane starting point, not a fixed policy.

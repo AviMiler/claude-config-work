@@ -8,11 +8,10 @@ Claude Code configuration for the work environment: a local model with a small c
 claude-config-work/
 ├── skills/
 │   ├── enforcing-coding-workflow/  - the workflow for every code change
-│   ├── agentic-code-local/         - quality rules + tracking-file templates
-│   ├── code-standards/             - general code rules
+│   ├── agentic-code-local/         - quality rules, file organization, tracking-file templates
 │   ├── chrome-extension-dev/       - Chrome extension (MV3) rules
 │   └── new-project-setup/          - bootstrap a new project
-├── agents/agents/
+├── agents/
 │   ├── spec-doc-agent.md           - CHECK against DECISIONS.md, DOCUMENT after approval
 │   └── verify-agent.md             - tests + regression check, Go/No-Go
 ├── git-instructions.md             - user does commit/push/PR
@@ -28,7 +27,7 @@ Every code change goes through `enforcing-coding-workflow`:
 1. CHECK -> 2. BUILD -> 3. VERIFY -> 4. USER TEST -> 5. DOCUMENT
 ```
 
-**Fast track** for trivial changes (typo, comment, UI string): BUILD -> short VERIFY -> USER TEST -> DOCUMENT. No CHECK.
+**Fast track** for trivial changes (typo, comment, UI string): BUILD -> short VERIFY -> USER TEST. No CHECK and no DOCUMENT.
 
 - **CHECK**: `spec-doc-agent` compares the request with `DECISIONS.md`.
 - **BUILD**: the agent writes the change.
@@ -37,6 +36,10 @@ Every code change goes through `enforcing-coding-workflow`:
 - **DOCUMENT**: `spec-doc-agent` updates the docs and marks the cycle's decisions `done`.
 
 The user commits, pushes and opens the PR. The agent never does.
+
+### Tracking files
+
+Created per project, only when needed: `AGENT_CONTEXT.md` (current state), `CHANGELOG.md` (one line per change), `PROJECT_MAP.md` (one line per file). DOCUMENT updates them. Templates are in `agentic-code-local`.
 
 ### DECISIONS.md
 

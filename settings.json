@@ -13,7 +13,6 @@
       "Bash(git clean:*)",
       "Bash(git rebase:*)",
       "Bash(rm -rf:*)"
-    ],
-    "defaultMode": "acceptEdits"
+    ]
   }
 }

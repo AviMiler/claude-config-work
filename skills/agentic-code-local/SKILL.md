@@ -4,7 +4,7 @@ description: >
   Local replacement for the unavailable anthropic-skills:agentic-code skill.
   Short quality rules and tracking-file templates for AI-written code that a
   human programmer reviews and approves. Load during BUILD of every code
-  change, together with code-standards.
+  change.
 ---
 
 # Agentic Code (local)
@@ -17,6 +17,10 @@ The code is written by you, but a human programmer tests, reviews and approves e
 - If a request is unclear, ask. Do not guess.
 
 ## Code rules
+- One file, one responsibility. If a file does two different jobs, split it.
+- One folder per topic (for example `auth/`, `billing/`), not one folder per technical layer. Split by role (`handlers`, `models`) only inside a topic that has grown large.
+- Follow the language's usual convention: Python packages per domain, JS/TS feature folders, Go `internal/`, Java package per domain. If unsure, use what the framework's own generator creates.
+- Apply the three rules above to files you create. If an existing file already breaks them, do not split it and do not mention it. Do only what the request asks.
 - One line at the top of each new file: what it is responsible for.
 - Explicit imports. No wildcards.
 - Full types on function inputs and outputs, where the language supports it.
