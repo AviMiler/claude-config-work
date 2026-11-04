@@ -16,9 +16,9 @@ description: >
 ⚠️ Read First — this skill only covers project *bootstrap*. The moment any
 code is written, hand off to `enforcing-coding-workflow`
 (`/enforcing-coding-workflow`) — every coding task in this project must go
-through its 5 stages (spec-validate → build → verify → document → git). Load
-that skill now and re-load it at the start of every future coding task in
-this project; that skill in turn references `anthropic-skills:agentic-code`.
+through its stages (check → build → verify → user test → document).
+Load that skill now and re-load it at the start of every future coding task
+in this project; that skill in turn references `agentic-code-local`.
 
 ## When this applies
 
@@ -38,7 +38,7 @@ A new or near-empty folder, "start a new project," "open a new project,"
    already covered).
 3. **Point at the workflow skill.** Tell the user once that
    `enforcing-coding-workflow` now governs all coding work in this project,
-   so they know why later requests will go through its 5 stages.
+   so they know why later requests will go through its stages.
 4. **Never bypass confirmation during setup itself** — even though the
    template below marks some commands `ask` rather than `deny`, run nothing
    that pushes, force-modifies, or deletes without asking the user directly,
@@ -64,8 +64,6 @@ Scope every path-based rule to this project's folder — never write a bare
       "Bash(git show:*)",
       "Bash(git branch:*)",
       "Bash(git remote -v)",
-      "Bash(git add:*)",
-      "Bash(git commit:*)",
       "Bash(git checkout:*)",
       "Bash(git switch:*)",
       "Bash(git stash:*)",
@@ -76,6 +74,7 @@ Scope every path-based rule to this project's folder — never write a bare
       "Bash(cat:*)"
     ],
     "ask": [
+      "Bash(git commit:*)",
       "Bash(git push:*)",
       "Bash(git push --force:*)",
       "Bash(git reset --hard:*)",
@@ -91,15 +90,14 @@ Scope every path-based rule to this project's folder — never write a bare
 Replace `//ABS/PATH/TO/PROJECT` with the project's real absolute path (Claude
 Code's path-scoped permission syntax: `Read(//abs/path/**)`).
 
-### Why these choices (confirmed with user, 2026-07-27)
+### Why these choices
 
 - **Auto-allowed:** status/diff/log/show/branch/remote (read-only) and
-  add/commit/checkout/switch/stash/fetch/pull (local-only, reversible) — no
-  reason to interrupt for these on every single command.
-- **`git push` always asks** — every push, on every branch, still prompts.
-  Pushing is the moment local work becomes visible to a shared remote, so it
-  stays a manual confirmation regardless of how routine the rest of the
-  session has been.
+  checkout/switch/stash/fetch/pull (local-only, reversible) — no reason to
+  interrupt for these.
+- **`git commit` and `git push` always ask** — in this workflow
+  the user commits, pushes and opens the PR, so the agent must not do it
+  silently.
 - **Destructive/hard-to-reverse commands stay on `ask`, not `deny`**
   (`reset --hard`, `clean -f`, `push --force`, `rm -rf`, `rebase`) — flagged
   for a manual yes/no each time rather than silently blocked, since the user

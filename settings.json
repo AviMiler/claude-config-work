@@ -6,55 +6,14 @@
       "Write",
       "Bash"
     ],
+    "ask": [
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(git reset --hard:*)",
+      "Bash(git clean:*)",
+      "Bash(git rebase:*)",
+      "Bash(rm -rf:*)"
+    ],
     "defaultMode": "acceptEdits"
-  },
-  "hooks": {
-    "Stop": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "(New-Object Media.SoundPlayer 'C:\\Windows\\Media\\Windows Notify.wav').PlaySync()",
-            "shell": "powershell"
-          }
-        ]
-      }
-    ],
-    "PermissionRequest": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "(New-Object Media.SoundPlayer 'C:\\Windows\\Media\\Windows Notify.wav').PlaySync()",
-            "shell": "powershell"
-          }
-        ]
-      }
-    ],
-    "Notification": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "(New-Object Media.SoundPlayer 'C:\\Windows\\Media\\Windows Notify.wav').PlaySync()",
-            "shell": "powershell"
-          }
-        ]
-      }
-    ],
-    "PreToolUse": [
-      {
-        "matcher": "Skill",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "skill=$(jq -r '.tool_input.skill // empty'); if echo \"$skill\" | grep -Eq '^(docx|pptx|xlsx)$'; then jq -n --arg ctx 'MANDATORY: this file may contain Hebrew/RTL text. Load the hebrew-office-docs skill NOW before writing any run. Rule: every run of Hebrew (or other RTL) text in a docx/pptx must have lang explicitly set to he-IL on the run itself (rPr w:lang/w:bidi, or pptx a:rPr lang) - the generator default lang=en-US silently breaks Word/PowerPoint bidi word-ordering even when rtl/rtlMode is set correctly. Split mixed Hebrew/Latin text into separate runs by language first, tag each run correctly.' '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"allow\",\"additionalContext\":$ctx}}'; else echo '{}'; fi"
-          }
-        ]
-      }
-    ]
-  },
-  "autoUpdatesChannel": "latest",
-  "inputNeededNotifEnabled": true,
-  "model": "opus"
+  }
 }

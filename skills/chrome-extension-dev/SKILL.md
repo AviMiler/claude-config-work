@@ -11,11 +11,10 @@ description: >
 
 # Chrome Extension Developer
 
-⚠️ Read First — also load `anthropic-skills:agentic-code` (general code
-quality) and `code-standards` (personal rules on top of it). This skill
+⚠️ Read First — also load `agentic-code-local` (general code
+quality) and `code-standards` (general rules). This skill
 adds Chrome-extension-specific rules and constraints on top of both —
-where they conflict, this skill wins (see `enforcing-coding-workflow`
-Stage 2's conflict rule).
+where they conflict, this skill wins (if still unclear, ask the user).
 
 Full copy-pasteable patterns (manifest.json, service worker, content
 script, popup, storage, message-flow, permission checklist) live in
